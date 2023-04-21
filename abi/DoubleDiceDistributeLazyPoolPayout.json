@@ -1,0 +1,629 @@
+[
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_distributableToken",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "lazyPoolAddress",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "constructor"
+  },
+  {
+    "inputs": [],
+    "name": "InvalidConfigNumber",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "NoClaimableAmount",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "TransferFailed",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "ZeroAddress",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "ZeroBalance",
+    "type": "error"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "sender",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "Claim",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "previousOwner",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "newOwner",
+        "type": "address"
+      }
+    ],
+    "name": "OwnershipTransferred",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "firstQuarterDay",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "lastQuarterDay",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "earliestStakingTime",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "latestStakingTime",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "maxLockDurationInDays",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "tokenPerValue",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "dateWeight",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "lengthWeight",
+            "type": "uint256"
+          }
+        ],
+        "indexed": false,
+        "internalType": "struct DoubleDiceDistributeLazyPoolPayout.Config",
+        "name": "newConfig",
+        "type": "tuple"
+      }
+    ],
+    "name": "SetPayoutConfiguration",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "configNumber",
+        "type": "uint256"
+      },
+      {
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "firstQuarterDay",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "lastQuarterDay",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "earliestStakingTime",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "latestStakingTime",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "maxLockDurationInDays",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "tokenPerValue",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "dateWeight",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "lengthWeight",
+            "type": "uint256"
+          }
+        ],
+        "indexed": false,
+        "internalType": "struct DoubleDiceDistributeLazyPoolPayout.Config",
+        "name": "newConfig",
+        "type": "tuple"
+      }
+    ],
+    "name": "UpdatePayoutConfiguration",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "receiver",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "tokenAddress",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "WithdrawToken",
+    "type": "event"
+  },
+  {
+    "inputs": [],
+    "name": "ONE_DAY",
+    "outputs": [
+      {
+        "internalType": "uint32",
+        "name": "",
+        "type": "uint32"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "claimPayout",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "config",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "firstQuarterDay",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "lastQuarterDay",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "earliestStakingTime",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "latestStakingTime",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "maxLockDurationInDays",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "tokenPerValue",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "dateWeight",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "lengthWeight",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "currentConfigNumber",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "distributableToken",
+    "outputs": [
+      {
+        "internalType": "contract IERC20",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "doubleDiceLazyPoolLocking",
+    "outputs": [
+      {
+        "internalType": "contract IDoubleDiceLazyPoolLocking",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "configNumber",
+        "type": "uint256"
+      }
+    ],
+    "name": "getConfigurationByNumber",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "firstQuarterDay",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "lastQuarterDay",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "earliestStakingTime",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "latestStakingTime",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "maxLockDurationInDays",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "tokenPerValue",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "dateWeight",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "lengthWeight",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct DoubleDiceDistributeLazyPoolPayout.Config",
+        "name": "",
+        "type": "tuple"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "userAddress",
+        "type": "address"
+      }
+    ],
+    "name": "getPayoutAmount",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "payoutAmount",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "user",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "configNumber",
+        "type": "uint256"
+      }
+    ],
+    "name": "getUserAmountClaimed",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "owner",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "renounceOwnership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "firstQuarterDay",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "lastQuarterDay",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "earliestStakingTime",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "latestStakingTime",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "maxLockDurationInDays",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "tokenPerValue",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "dateWeight",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "lengthWeight",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct DoubleDiceDistributeLazyPoolPayout.Config",
+        "name": "newConfig",
+        "type": "tuple"
+      }
+    ],
+    "name": "setPayoutConfiguration",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "newOwner",
+        "type": "address"
+      }
+    ],
+    "name": "transferOwnership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "firstQuarterDay",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "lastQuarterDay",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "earliestStakingTime",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "latestStakingTime",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "maxLockDurationInDays",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "tokenPerValue",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "dateWeight",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "lengthWeight",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct DoubleDiceDistributeLazyPoolPayout.Config",
+        "name": "newConfig",
+        "type": "tuple"
+      },
+      {
+        "internalType": "uint256",
+        "name": "configNumber",
+        "type": "uint256"
+      }
+    ],
+    "name": "updatePayoutConfiguration",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "userAmountClaimed",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "tokenAddress",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "receiver",
+        "type": "address"
+      }
+    ],
+    "name": "withdrawToken",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  }
+]
